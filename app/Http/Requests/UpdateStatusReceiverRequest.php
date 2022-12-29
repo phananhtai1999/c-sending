@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class CampaignRequest extends FormRequest
+class UpdateStatusReceiverRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +25,8 @@ class CampaignRequest extends FormRequest
     public function rules()
     {
         return [
-            'config' => ['required'],
-            'parameters' => ['required'],
-            'type' => ['required', Rule::in(['sms', 'email', 'telegram'])],
+            'receiver_id' => ['required'],
+            'status' => ['required', Rule::in(['new', 'active', 'success', 'failed', 'pending'])],
         ];
     }
 }

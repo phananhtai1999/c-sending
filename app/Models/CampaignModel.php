@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jenssegers\Mongodb\Eloquent\Model;
+use Jenssegers\Mongodb\Relations\HasMany;
 
 class CampaignModel extends Model
 {
@@ -16,4 +17,13 @@ class CampaignModel extends Model
         'status',
         'config',
     ];
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany|HasMany
+     */
+    public function receivers()
+    {
+        return $this->hasMany(ReceiverModel::class, 'campaign_uuid', '_id');
+    }
 }

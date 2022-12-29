@@ -26,7 +26,7 @@ class CampaignController extends AbstractRestAPIController
         $campaign = $this->service->create([
             'template' => $template,
             'type' => $request->get('type'),
-            'status' => $request->get('status'),
+            'status' => 'new',
             'config' => $request->get('config')
         ]);
 
@@ -34,7 +34,7 @@ class CampaignController extends AbstractRestAPIController
         $receiver = $this->receiverService->create([
             'campaign_uuid' => $campaign->_id,
             'destination' => $request->get('destination'),
-            'status' => $request->get('status'),
+            'status' => 'new',
             'parameters' => $request->get('parameters')
         ]);
 
