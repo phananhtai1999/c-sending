@@ -21,10 +21,8 @@ class CampaignController extends AbstractRestAPIController
         $this->receiverService = $reseiverService;
     }
     public function saveCampaign(CampaignRequest $request) {
-        $template = "Xin chào " . $request->get('parameters')['first_name' ]. " cảm ơn bạn";
-
         $campaign = $this->service->create([
-            'template' => $template,
+            'template' => $request->get('template'),
             'type' => $request->get('type'),
             'status' => $request->get('status'),
             'config' => $request->get('config')

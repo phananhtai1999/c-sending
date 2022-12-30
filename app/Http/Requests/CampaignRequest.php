@@ -2,8 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\CampaignType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
+use App\Enums\CampaignStatus;
 
 class CampaignRequest extends FormRequest
 {
@@ -26,8 +29,9 @@ class CampaignRequest extends FormRequest
     {
         return [
             'config' => ['required'],
-            'type' => ['required', Rule::in(['sms', 'email', 'telegram'])],
-            'status' => ['required', Rule::in(['new', 'active', 'completed'])],
+            'template' => ['required'],
+            'type' => ['required', new Enum(CampaignType::class)],
+            'status' => ['required', new Enum(CampaignStatus::class)],
         ];
     }
 }
