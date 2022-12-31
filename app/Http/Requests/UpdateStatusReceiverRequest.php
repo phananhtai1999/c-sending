@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ReceiverStatus;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateStatusReceiverRequest extends FormRequest
 {
@@ -26,7 +27,7 @@ class UpdateStatusReceiverRequest extends FormRequest
     {
         return [
             'receiver_id' => ['required'],
-            'status' => ['required', Rule::in(['new', 'active', 'success', 'failed', 'pending'])],
+            'status' => ['required', new Enum(ReceiverStatus::class)],
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\CampaignType;
+use App\Enums\ReceiverStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
