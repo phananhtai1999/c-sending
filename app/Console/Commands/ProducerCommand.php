@@ -39,7 +39,7 @@ class ProducerCommand extends Command
 
         $producer = new Producer($conf);
         $topic = $producer->newTopic(env('KAFKA_TOPIC'));
-        $message = json_encode(['account_id' => 1]);
+        $message = json_encode(['receiver_id' => '63ae51e9c2922582bd065c3e', 'status' => 'active']);
 
         $topic->produce(RD_KAFKA_PARTITION_UA, 0, $message);
 
