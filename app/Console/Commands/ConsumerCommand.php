@@ -2,8 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Services\ReceiverService;
+use App\Services\KafkaService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use RdKafka\Conf;
 use RdKafka\KafkaConsumer;
 
@@ -31,13 +32,12 @@ class ConsumerCommand extends Command
     public function handle()
     {
         $conf = new Conf();
-        $conf->set('metadata.broker.list', env('KAFKA_BROKER_LIST'));
-        $conf->set('security.protocol', env('KAFKA_SECURITY'));
-        $conf->set('sasl.mechanism', env('KAFKA_MECHANISM'));
-        $conf->set('sasl.username', env('KAFKA_USERNAME'));
-        $conf->set('sasl.password', env('KAFKA_PASSWORD'));
+        $conf->set('metadata.broker.list', config('kafka.config.broker_list'));
+        $conf->set('security.protocol', config('kafka.config.security'));
+        $conf->set('sasl.mechanism', config('kafka.config.mechanism'));
+        $conf->set('sasl.username', config('kafka.config.username'));
+        $conf->set('sasl.password', config('kafka.config.password'));
         $conf->set('group.id', 'group');
-        $conf->set('auto.offset.reset', 'earliest');
 
         $consumer = new KafkaConsumer($conf);
 
@@ -45,9 +45,14 @@ class ConsumerCommand extends Command
 
         while (true) {
             $message = $consumer->consume(5000);
-            if ($message->payload) {
+            if (null === $message || $message->err === RD_KAFKA_RESP_ERR__PARTITION_EOF) {
+                continue;
+            } elseif ($message->err) {
+                Log::info($message->errstr() . "\n");
+                break;
+            } else {
                 $request = json_decode($message->payload);
-                $service = new ReceiverService();
+                $service = new KafkaService();
                 $model = $service->findOneById($request->receiver_id);
                 $result = $service->update($model, ['status' => $request->status]);
                 if ($result) {

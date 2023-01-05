@@ -1,33 +1,18 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Services;
 
-use Illuminate\Console\Command;
+use App\Abstracts\AbstractService;
+use App\Models\ReceiverModel;
 use RdKafka\Conf;
 use RdKafka\Producer;
 
-class ProducerCommand extends Command
+class KafkaService extends AbstractService
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'command:producer';
+    protected $modelClass = ReceiverModel::class;
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Running Producer';
 
-    /**
-     * Execute the console command.
-     *
-     * @return void
-     */
-    public function handle()
+    public function sendNotification($topic, $data)
     {
         $conf = new Conf();
 
@@ -38,8 +23,8 @@ class ProducerCommand extends Command
         $conf->set('sasl.password', config('kafka.config.password'));
 
         $producer = new Producer($conf);
-        $topic = $producer->newTopic(env('KAFKA_TOPIC'));
-        $message = json_encode(['receiver_id' => '63ae51e9c2922582bd065c3e', 'status' => 'active']);
+        $topic = $producer->newTopic($topic);
+        $message = json_encode([$data]);
 
         $topic->produce(RD_KAFKA_PARTITION_UA, 0, $message);
 
@@ -49,6 +34,6 @@ class ProducerCommand extends Command
                 break;
             }
         }
-
     }
+
 }
