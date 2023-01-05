@@ -127,7 +127,7 @@
                                                                     "type": "integer"
                                                                 },
                                                                 "created_at": {
-                                                                    "type": "times"
+                                                                    "type": "string"
                                                                 }
                                                             },
                                                             "type": "object"
@@ -136,6 +136,60 @@
                                                 },
                                                 "type": "object"
                                             }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/update-status": {
+            "post": {
+                "tags": [
+                    "receiver"
+                ],
+                "description": "update status",
+                "operationId": "update",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multiPart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "receiver_id",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "receiver_id": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
                                         }
                                     },
                                     "type": "object"
