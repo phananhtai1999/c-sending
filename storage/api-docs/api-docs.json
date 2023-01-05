@@ -1,0 +1,150 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Laravel C-sending",
+        "description": "L5 Swagger OpenApi description",
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "API Server C-sending"
+        }
+    ],
+    "paths": {
+        "/api/campaign": {
+            "post": {
+                "tags": [
+                    "Campaign"
+                ],
+                "description": "save sending data",
+                "operationId": "store",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multiPart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "config",
+                                    "type",
+                                    "status",
+                                    "paramerters",
+                                    "destination",
+                                    "template"
+                                ],
+                                "properties": {
+                                    "config": {
+                                        "type": "object"
+                                    },
+                                    "type": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "paramerters": {
+                                        "type": "object"
+                                    },
+                                    "destination": {
+                                        "type": "string"
+                                    },
+                                    "template": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "campaign": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "_id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "template": {
+                                                                    "type": "string"
+                                                                },
+                                                                "status": {
+                                                                    "type": "string"
+                                                                },
+                                                                "type": {
+                                                                    "type": "string"
+                                                                },
+                                                                "config": {
+                                                                    "type": "object"
+                                                                },
+                                                                "created_at": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "receiver": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "_id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "campaign_uuid": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "destination": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "status": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "parameters": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "created_at": {
+                                                                    "type": "times"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
