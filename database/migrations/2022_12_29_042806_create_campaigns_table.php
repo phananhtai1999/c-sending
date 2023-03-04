@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('campaigns', function (Blueprint $table) {
             $table->text('template');
+            $table->text('subject')->nullable();
             $table->enum('type', ['sms', 'email', 'telegram']);
             $table->enum('status', ['new', 'active', 'completed']);
             $table->json('config');

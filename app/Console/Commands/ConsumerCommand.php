@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Services\CampaignService;
 use App\Services\KafkaService;
+use App\Services\ReceiverService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use RdKafka\Conf;
@@ -37,11 +39,11 @@ class ConsumerCommand extends Command
         $conf->set('sasl.mechanism', config('kafka.config.mechanism'));
         $conf->set('sasl.username', config('kafka.config.username'));
         $conf->set('sasl.password', config('kafka.config.password'));
-        $conf->set('group.id', 'group');
+        $conf->set('group.id', 'group1');
 
         $consumer = new KafkaConsumer($conf);
 
-        $consumer->subscribe([env('KAFKA_TOPIC')]);
+        $consumer->subscribe(['email_topic']);
 
         while (true) {
             $message = $consumer->consume(5000);
@@ -49,14 +51,15 @@ class ConsumerCommand extends Command
                 continue;
             } elseif ($message->err) {
                 Log::info($message->errstr() . "\n");
-                break;
             } else {
                 $request = json_decode($message->payload);
-                $service = new KafkaService();
-                $model = $service->findOneById($request->receiver_id);
-                $result = $service->update($model, ['status' => $request->status]);
-                if ($result) {
-                    $this->info('update status successfully');
+                foreach ($request[0] as $receiver) {
+                    $service = new ReceiverService();
+                    $model = $service->findOneById($receiver->receiver_uuid);
+                    $result = $service->update($model, ['status' => 'done']);
+                    if ($result) {
+                        $this->info('update status successfully for receiver ' . $receiver->receiver_uuid);
+                    }
                 }
             }
         }
