@@ -26,7 +26,7 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "multiPart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "required": [
                                     "config",
@@ -43,9 +43,6 @@
                                     "type": {
                                         "type": "string"
                                     },
-                                    "status": {
-                                        "type": "string"
-                                    },
                                     "paramerters": {
                                         "type": "object"
                                     },
@@ -54,6 +51,31 @@
                                     },
                                     "template": {
                                         "type": "string"
+                                    },
+                                    "subject": {
+                                        "type": "string"
+                                    },
+                                    "receivers": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "parameters": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "username": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "destination": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
                                     }
                                 },
                                 "type": "object"

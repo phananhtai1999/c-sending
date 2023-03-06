@@ -51,15 +51,25 @@ class CampaignController extends AbstractRestAPIController
      *     @OA\RequestBody(
      *      required=true,
      *      @OA\MediaType(
-     *          mediaType="multiPart/form-data",
+     *          mediaType="application/json",
      *          @OA\Schema(
      *              required={"config", "type", "status", "paramerters", "destination", "template"},
      *              @OA\Property(property="config", type="object"),
      *              @OA\Property(property="type", type="string"),
-     *              @OA\Property(property="status", type="string"),
      *              @OA\Property(property="paramerters", type="object"),
      *              @OA\Property(property="destination", type="string"),
      *              @OA\Property(property="template", type="string"),
+     *              @OA\Property(property="subject", type="string"),
+     *              @OA\Property(property="receivers", type="array",
+     *                  @OA\Items(
+     *                      @OA\Property(property="parameters", type="array",
+     *                          @OA\Items(
+     *                              @OA\Property(property="username", type="string"),
+     *                          )
+     *                      ),
+     *                      @OA\Property(property="destination", type="string"),
+     *                  )
+     *              )
      *          )
      *      )
      *     ),
@@ -105,26 +115,46 @@ class CampaignController extends AbstractRestAPIController
             'template' => $request->get('template'),
             'type' => $request->get('type'),
             'status' => 'new',
-            'config' => $request->get('config')
-        ]);
-
-        $receiver = $this->receiverService->create([
-            'campaign_uuid' => $campaign->_id,
-            'destination' => $request->get('destination'),
-            'status' => 'new',
-            'parameters' => $request->get('parameters')
+            'config' => $request->get('config'),
+            'subject' => $request->get('subject')
         ]);
         if ($request->get('type') == 'sms') {
             $topic = config('kafka.topic.sms.default');
+            $quantityReceiver = config('kafka.quantity_receiver.sms');
         } elseif ($request->get('type') == 'email') {
             $topic = config('kafka.topic.email');
+            $quantityReceiver = config('kafka.quantity_receiver.email');
         } else {
             $topic = config('kafka.topic.telegram');
+            $quantityReceiver = config('kafka.quantity_receiver.telegram');
         }
-        $this->kafkaService->sendNotification($topic, $receiver);
+        $count = 0;
+        foreach ($request->get('receivers') as $receiver) {
+            $receiver = $this->receiverService->create([
+                'campaign_uuid' => $campaign->_id,
+                'destination' => $receiver['destination'],
+                'status' => 'new',
+                'parameters' => $receiver['parameters']
+            ]);
+            $receivers[] = [
+                'receiver_uuid' => $receiver->_id,
+                'subject' => $request->get('subject') . $receiver['parameters']['username'],
+                'content' => $request->get('template')
+            ];
+            $count++;
+            if ($count == $quantityReceiver) {
+                $this->kafkaService->sendNotification($topic, $receivers);
+                $count = 0;
+                $receivers = [];
+            }
+        };
+
+        $this->kafkaService->sendNotification($topic, $receivers);
+        $campaign = $this->service->update($campaign, [
+            'status' => 'done',
+        ]);
         return $this->sendCreatedResponse(['data' => [
-            'campaign' => $campaign,
-            'receiver' => $receiver,
+            'campaign' => $campaign
         ]]);
     }
 }

@@ -26,12 +26,14 @@ class CampaignRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
             'config' => ['required'],
             'template' => ['required'],
             'type' => ['required', new Enum(CampaignType::class)],
-            'status' => ['required', new Enum(CampaignStatus::class)],
-            'parameters' => ['required'],
+            'receivers' => ['required'],
+            'receivers.*.parameters' => ['required'],
+            'receivers.*.destination' => ['required'],
         ];
     }
 }
