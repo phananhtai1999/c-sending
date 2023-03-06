@@ -43,7 +43,7 @@ class ConsumerCommand extends Command
 
         $consumer = new KafkaConsumer($conf);
 
-        $consumer->subscribe(['email_topic']);
+        $consumer->subscribe(env('KAFKA_RECEIVER_TOPIC'));
 
         while (true) {
             $message = $consumer->consume(5000);
@@ -56,7 +56,7 @@ class ConsumerCommand extends Command
                 foreach ($request[0] as $receiver) {
                     $service = new ReceiverService();
                     $model = $service->findOneById($receiver->receiver_uuid);
-                    $result = $service->update($model, ['status' => 'done']);
+                    $result = $service->update($model, ['status' => $receiver->status]);
                     if ($result) {
                         $this->info('update status successfully for receiver ' . $receiver->receiver_uuid);
                     }
