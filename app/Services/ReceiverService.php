@@ -10,6 +10,6 @@ class ReceiverService extends AbstractService
     protected $modelClass = ReceiverModel::class;
 
     public function getRecord($numberOfLast = 0) {
-        return $this->model->where('status', 'done')->get()->slice($numberOfLast)->values();
+        return $this->model->select('receiver_uuid', 'status')->where('status','!=', 'new')->get()->slice($numberOfLast)->values();
     }
 }

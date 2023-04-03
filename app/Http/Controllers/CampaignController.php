@@ -139,7 +139,7 @@ class CampaignController extends AbstractRestAPIController
                     'parameters' => $receiver['parameters']
                 ]);
                 $receivers[] = [
-                    'receiver_uuid' => $receiver->_id,
+                    'receiver_id' => $receiver->_id,
                     'subject' => $renderSubject,
                     'content' => $renderContent,
                     'destination' => $receiver['destination']
@@ -147,7 +147,7 @@ class CampaignController extends AbstractRestAPIController
                 $count++;
                 $messages = [
                     'config' => $request->get('config'),
-                    'receiver' => $receivers
+                    'receivers' => $receivers
                 ];
                 if ($count == $quantityReceiver) {
                     $this->kafkaService->sendNotification($topic, $messages);
@@ -157,7 +157,7 @@ class CampaignController extends AbstractRestAPIController
             };
             $messages = [
                 'config' => $request->get('config'),
-                'receiver' => $receivers
+                'receivers' => $receivers
             ];
             $this->kafkaService->sendNotification($topic, $messages);
             $campaign = $this->service->update($campaign, [
