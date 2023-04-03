@@ -11,8 +11,7 @@
     },
     "servers": [
         {
-            "url": "http://127.0.0.1:8000",
-            "description": "API Server C-sending"
+            "url": "http://localhost:9000"
         }
     ],
     "paths": {
@@ -43,11 +42,8 @@
                                     "type": {
                                         "type": "string"
                                     },
-                                    "paramerters": {
-                                        "type": "object"
-                                    },
-                                    "destination": {
-                                        "type": "string"
+                                    "campaign_uuid": {
+                                        "type": "integer"
                                     },
                                     "template": {
                                         "type": "string"
@@ -59,6 +55,9 @@
                                         "type": "array",
                                         "items": {
                                             "properties": {
+                                                "uuid": {
+                                                    "type": "integer"
+                                                },
                                                 "parameters": {
                                                     "type": "array",
                                                     "items": {
@@ -212,6 +211,98 @@
                                         },
                                         "message": {
                                             "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/processed-receivers": {
+            "get": {
+                "tags": [
+                    "receiver"
+                ],
+                "description": "get processed receiver",
+                "operationId": "receiver",
+                "parameters": [
+                    {
+                        "name": "get_all",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer"
+                                        },
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "processed_receiver": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "_id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "campaign_uuid": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "destination": {
+                                                                    "type": "string"
+                                                                },
+                                                                "status": {
+                                                                    "type": "string"
+                                                                },
+                                                                "parameters": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "properties": {
+                                                                            "contact_first_name": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "contact_middle_name": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "contact_last_name": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "contact_phone": {
+                                                                                "type": "integer"
+                                                                            }
+                                                                        },
+                                                                        "type": "object"
+                                                                    }
+                                                                },
+                                                                "created_at": {
+                                                                    "type": "string"
+                                                                },
+                                                                "updated_at": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"

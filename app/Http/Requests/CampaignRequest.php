@@ -30,6 +30,7 @@ class CampaignRequest extends FormRequest
         return [
             'config' => ['required'],
             'template' => ['required'],
+            'campaign_uuid' => ['unique:campaigns,campaign_uuid'],
             'type' => ['required', new Enum(CampaignType::class)],
             'receivers' => ['required'],
             'receivers.*.parameters' => ['required'],
