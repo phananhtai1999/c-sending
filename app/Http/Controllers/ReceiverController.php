@@ -104,7 +104,6 @@ class ReceiverController extends AbstractRestAPIController
             $redis->set('number_of_last', $numberOfLast + count($processedReceivers));
         }
 
-
         return $this->sendSuccessResponse(['data' => ['processed_receiver' => $processedReceivers]], 'Successfully');
     }
 }
