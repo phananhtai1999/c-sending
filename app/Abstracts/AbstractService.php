@@ -155,4 +155,9 @@ abstract class AbstractService
     {
         return $this->model->all();
     }
+
+    public function findAllWhere($where)
+    {
+        return $this->model->where($where)->get();
+    }
 }

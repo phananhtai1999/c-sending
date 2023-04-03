@@ -12,6 +12,7 @@ class CampaignModel extends Model
 
     protected $table = "campaigns";
     protected $fillable = [
+        'campaign_uuid',
         'template',
         'type',
         'status',

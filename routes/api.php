@@ -23,3 +23,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/campaign', [CampaignController::class, 'saveCampaign']);
 
 Route::post('/update-status', [ReceiverController::class, 'updateStatus']);
+
+Route::get('/processed-receivers', [ReceiverController::class, 'processedReceivers']);

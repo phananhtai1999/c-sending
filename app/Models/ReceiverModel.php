@@ -14,6 +14,7 @@ class ReceiverModel extends Model
     protected $table = "receivers";
     protected $fillable = [
         'campaign_uuid',
+        'receiver_uuid',
         'destination',
         'status',
         'parameters',
