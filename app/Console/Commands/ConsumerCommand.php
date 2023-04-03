@@ -43,8 +43,8 @@ class ConsumerCommand extends Command
 
         $consumer = new KafkaConsumer($conf);
 
-        $consumer->subscribe(env('KAFKA_RECEIVER_TOPIC'));
-
+        $consumer->subscribe([env('KAFKA_RECEIVER_TOPIC')]);
+        $this->info('The command running!');
         while (true) {
             $message = $consumer->consume(5000);
             if (null === $message || $message->err === RD_KAFKA_RESP_ERR__PARTITION_EOF) {
@@ -53,12 +53,14 @@ class ConsumerCommand extends Command
                 Log::info($message->errstr() . "\n");
             } else {
                 $request = json_decode($message->payload);
-                foreach ($request[0] as $receiver) {
+                // dd($request);
+                foreach ($request as $receiver) {
+                    $this->info('Run receiver: '. $receiver->receiver_id);
                     $service = new ReceiverService();
-                    $model = $service->findOneById($receiver->receiver_uuid);
+                    $model = $service->findOneById($receiver->receiver_id);
                     $result = $service->update($model, ['status' => $receiver->status]);
                     if ($result) {
-                        $this->info('update status successfully for receiver ' . $receiver->receiver_uuid);
+                        $this->info('update status successfully for receiver ' . $receiver->receiver_id);
                     }
                 }
             }
