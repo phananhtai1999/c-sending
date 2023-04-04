@@ -25,7 +25,7 @@ class ProcessedReceiverRequest extends FormRequest
     {
         return [
             'get_all' => ['boolean'],
-            'filter.campaign_uuid' => ['integer']
+            'campaign_uuid' => ['integer']
         ];
     }
 }

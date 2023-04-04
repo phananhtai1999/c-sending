@@ -96,18 +96,22 @@ class ReceiverController extends AbstractRestAPIController
      */
     public function processedReceivers(ProcessedReceiverRequest $request) {
         if ($request->get_all) {
-            if (!empty($request->get('filter')['campaign_uuid'])) {
+            if (!empty($request->get('campaign_uuid'))) {
                 $processedReceivers = $this->service->findAllWhere([
-                    'status' => 'done',
-                    'campaign_uuid' => (int)$request->get('filter')['campaign_uuid']
+                    ['status', '!=', 'new'],
+                    ['campaign_uuid', (int)$request->get('campaign_uuid')]
                 ]);
             } else {
-                $processedReceivers = $this->service->findAllWhere(['status' => 'done']);
+                $processedReceivers = $this->service->findAllWhere([['status', '!=', 'new']]);
             }
         } else {
             $redis = Redis::connection();
             $numberOfLast = $redis->get('number_of_last') ?? 0;
-            $processedReceivers = $this->service->getRecord($numberOfLast);
+            if (!empty($request->get('campaign_uuid'))) {
+                $processedReceivers = $this->service->getRecord($numberOfLast, $request->get('campaign_uuid'));
+            } else {
+                $processedReceivers = $this->service->getRecord($numberOfLast);
+            }
             $redis->set('number_of_last', $numberOfLast + count($processedReceivers));
         }
 
