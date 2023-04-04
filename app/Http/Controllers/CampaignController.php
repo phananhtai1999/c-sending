@@ -173,43 +173,13 @@ class CampaignController extends AbstractRestAPIController
         return $response;
     }
 
-    public function renderBody($mailTemplate, $contact, $campaign = null)
+    public function renderBody($mailTemplate, $contact)
     {
-        $websiteName = $contact['website_name'] ?? '';
-        $websiteDomain = $contact['website_domain'] ?? '';
-        $websiteDescription = $contact['website_description'] ?? '';
-        $contactFirstName = $contact['contact_first_name'] ?? '';
-        $contactMiddleName = $contact['contact_middle_name'] ?? '';
-        $contactLastName = $contact['contact_last_name'] ?? '';
-        $contactPhone = $contact['contact_phone'] ?? '';
-        $contactSex = $contact['contact_sex'] ?? '';
-        $contactDob = $contact['contact_dob'] ?? '';
-        $contactCountry = $contact['contact_country'] ?? '';
-        $contactCity = $contact['contact_city'] ?? '';
-        $currentDay = $contact['current_day'] ?? '';
-        $currentTime = $contact['current_time'] ?? '';
-        $search = [
-            '{{website_name}}',
-            '{{website_domain}}',
-            '{{website_description}}',
-            '{{contact_first_name}}',
-            '{{contact_middle_name}}',
-            '{{contact_last_name}}',
-            '{{contact_phone}}',
-            '{{contact_sex}}',
-            '{{contact_dob}}',
-            '{{contact_country}}',
-            '{{contact_city}}',
-            '{{current_day}}',
-            '{{current_time}}'
+        foreach($contact as $key => $value){
+            $mailTemplate = str_replace('{' . $key .'}', $value, $mailTemplate);
+        }
 
-        ];
-        $replace = [
-            $websiteName, $websiteDomain, $websiteDescription,
-            $contactFirstName, $contactMiddleName, $contactLastName, $contactPhone, $contactSex, $contactDob, $contactCountry, $contactCity,
-            $currentDay, $currentTime
-        ];
+        return $mailTemplate;
 
-        return Str::replace($search, $replace, $mailTemplate);
     }
 }
